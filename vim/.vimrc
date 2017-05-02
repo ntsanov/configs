@@ -1,4 +1,4 @@
-" To ignore plugin indent changes, instead use:
+"To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
 " Brief help
@@ -26,33 +26,17 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-scripts/Conque-GDB'
 Plugin 'scrooloose/nerdtree'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'easymotion/vim-easymotion'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
 "----Mapings----"
-noremap <F9> :make <bar> copen <CR>
-noremap <Leader>T :CommandT <CR>
 "----Settings----"
-"--General--
-set laststatus=2
-set encoding=utf-8
-"colorscheme base16-ocean
 
-"--Plugin Airline-- 
+"--Plugin Airline--
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
-nmap <leader>6 <Plug>AirlineSelectTab6
-nmap <leader>7 <Plug>AirlineSelectTab7
-nmap <leader>8 <Plug>AirlineSelectTab8
-nmap <leader>9 <Plug>AirlineSelectTab9
-nmap <leader>- <Plug>AirlineSelectPrevTab
-nmap <leader>= <Plug>AirlineSelectNextTab
 
 "--Plugin CtrlP --
 let g:ctrlp_working_path_mode = 'c'
@@ -68,3 +52,10 @@ let g:ctrlp_working_path_mode = 'c'
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
+
+"Custom setting files
+source ~/.vim/startup/mappings.vim
+source ~/.vim/startup/color.vim
+source ~/.vim/startup/settings.vim
+source ~/.vim/startup/functions.vim
+source ~/.vim/startup/commands.vim
