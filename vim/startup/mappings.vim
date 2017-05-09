@@ -1,8 +1,18 @@
-noremap <F9> :make <bar> copen <CR>
-no <left> <Nop>
-no <right> <Nop>
-no <up> <Nop>
-no <down> <Nop>
+" Unmap the arrow keys
+no <down> ddp
+no <left> <Ctrl-w>h
+no <right> <Ctrl-w>l
+no <up> ddkP
+ino <down> <Nop>
+ino <left> <Nop>
+ino <right> <Nop>
+ino <up> <Nop>
+vno <down> <Nop>
+vno <left> <Nop>
+vno <right> <Nop>
+vno <up> <Nop>
+"NERDTree
+no <leader>N :NERDTreeToggle<CR>
 "Airline
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
