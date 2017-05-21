@@ -31,3 +31,5 @@ nmap n nzz
 nmap N Nzz
 nmap } }zz
 nmap { {zz
+"Autoclose tags
+inoremap <C-f> <CR></<C-X><C-O><ESC>O
