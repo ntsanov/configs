@@ -5,7 +5,6 @@ if has("win32")
 else
 	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline
 endif
-"---------- Colorscheme ----------"
 syntax on
 set relativenumber
 set laststatus=2
@@ -14,3 +13,23 @@ set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
 set list listchars=tab:»\ ,eol:¬,nbsp:˽,trail:•,extends:›,precedes:‹
+"--Persistent undo
+if has("win32")
+	set undofile
+	set undodir='%USERPROFILE%/vimfiles/undo'
+	set undolevels=1000
+	set undoreload=10000
+else
+	set undofile                " Save undo's after file closes
+	set undodir=$HOME/.vim/undo " where to save undo histories
+	set undolevels=1000         " How many undos
+	set undoreload=10000        " number of lines to save for undo
+endif
+"
+"--Plugin Airline--
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+
+"--Plugin CtrlP --
+let g:ctrlp_working_path_mode = 'c'
