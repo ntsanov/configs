@@ -8,6 +8,7 @@ endif
 syntax on
 set relativenumber
 set laststatus=2
+set tabstop=4
 scriptencoding utf-8
 set encoding=utf-8
 set termencoding=utf-8
