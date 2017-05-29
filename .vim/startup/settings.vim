@@ -1,7 +1,7 @@
 "---------- Font ----------"
 if has("win32")
 "	set guifont=Ubuntu_Mono_derivative_Powerlin:h11:cANSI:qDRAFT
-	set  guifont=DejaVu_Sans_Mono_for_Powerline:h11:cANSI:qDRAFT
+	set  guifont=DejaVu_Sans_Mono_for_Powerline:h10:cANSI:qDRAFT
 else
 	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline
 endif
