@@ -11,6 +11,7 @@ set laststatus=2
 set tabstop=4 " Tabwidth as seen on screen
 set shiftwidth=4 " How many spaces when pressing > or <
 set cursorline
+set showcmd
 scriptencoding utf-8
 set encoding=utf-8
 set termencoding=utf-8
