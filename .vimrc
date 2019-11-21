@@ -27,8 +27,8 @@ Plugin 'chriskempson/base16-vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'vim-scripts/DoxygenToolkit.vim'
 Plugin 'tpope/vim-surround'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+"Plugin 'Valloric/YouCompleteMe'
+"Plugin 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 "Plugin 'vim-scripts/Conque-GDB'
