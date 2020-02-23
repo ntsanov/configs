@@ -6,7 +6,8 @@ else
 	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline
 endif
 syntax on
-set relativenumber
+"set relativenumber
+set number
 set laststatus=2
 set tabstop=4 " Tabwidth as seen on screen
 set shiftwidth=4 " How many spaces when pressing > or <
