@@ -34,10 +34,11 @@ endif
 
 "
 "--Plugin Airline--
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#buffer_idx_mode = 1
+"let g:airline#extensions#tabline#enabled = 1
+"let g:airline_powerline_fonts = 1
+"let g:airline#extensions#tabline#buffer_idx_mode = 1
 
+let g:powerline_pycmd="py3"
 "--Plugin CtrlP --
 let g:ctrlp_working_path_mode = 'c'
 let g:ctrlp_cache_dir = $HOME . '/.vim/cache/ctrlp'
