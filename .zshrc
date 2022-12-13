@@ -21,6 +21,11 @@ compinit
 # End of lines added by compinstall
 #
 
+export GOPATH=/home/ntsanov/svn/VM/V3/go
+export PATH=$PATH:${HOME}/go/bin:${GOPATH}/bin
+export PATH=${HOME}/.local/bin:$PATH
+export EDITOR=vim
+
 export TERM="xterm-256color"
 source $HOME/.aliases
 alias ls='ls --color=auto'
