@@ -7,8 +7,12 @@ Plug 'overcache/NeoSolarized'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+Plug 'hoob3rt/lualine.nvim'
+" lualine icons
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'romgrk/barbar.nvim'
 Plug 'tpope/vim-surround'
 Plug 'preservim/nerdtree'
 Plug 'tomtom/tcomment_vim'
@@ -28,8 +32,8 @@ colorscheme NeoSolarized
 " Visual Settings
 "=====================================================================
 
-let g:airline_powerline_fonts = 1 " Enable powerline fonts
-let g:airline#extensions#tabline#enabled = 1 " Show tabs
+"let g:airline_powerline_fonts = 1 " Enable powerline fonts
+"et g:airline#extensions#tabline#enabled = 1 " Show tabs
 set nu "enable line numbers
 
 "=====================================================================
@@ -217,3 +221,46 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+"=====================================================================
+" Barbar mappings
+"=====================================================================
+"
+" Move to previous/next
+nnoremap <silent>    <A-,> :BufferPrevious<CR>
+nnoremap <silent>    <A-.> :BufferNext<CR>
+" Re-order to previous/next
+nnoremap <silent>    <A-<> :BufferMovePrevious<CR>
+nnoremap <silent>    <A->> :BufferMoveNext<CR>
+" Goto buffer in position...
+nnoremap <silent>    <A-1> :BufferGoto 1<CR>
+nnoremap <silent>    <A-2> :BufferGoto 2<CR>
+nnoremap <silent>    <A-3> :BufferGoto 3<CR>
+nnoremap <silent>    <A-4> :BufferGoto 4<CR>
+nnoremap <silent>    <A-5> :BufferGoto 5<CR>
+nnoremap <silent>    <A-6> :BufferGoto 6<CR>
+nnoremap <silent>    <A-7> :BufferGoto 7<CR>
+nnoremap <silent>    <A-8> :BufferGoto 8<CR>
+nnoremap <silent>    <A-9> :BufferLast<CR>
+" Pin/unpin buffer
+nnoremap <silent>    <A-p> :BufferPin<CR>
+" Close buffer
+nnoremap <silent>    <A-c> :BufferClose<CR>
+" Wipeout buffer
+"                          :BufferWipeout<CR>
+" Close commands
+"                          :BufferCloseAllButCurrent<CR>
+"                          :BufferCloseAllButPinned<CR>
+"                          :BufferCloseBuffersLeft<CR>
+"                          :BufferCloseBuffersRight<CR>
+" Magic buffer-picking mode
+nnoremap <silent> <C-s>    :BufferPick<CR>
+" Sort automatically by...
+nnoremap <silent> <Space>bb :BufferOrderByBufferNumber<CR>
+nnoremap <silent> <Space>bd :BufferOrderByDirectory<CR>
+nnoremap <silent> <Space>bl :BufferOrderByLanguage<CR>
+nnoremap <silent> <Space>bw :BufferOrderByWindowNumber<CR>
+
+" Other:
+" :BarbarEnable - enables barbar (enabled by default)
+" :BarbarDisable - very bad command, should never be used
