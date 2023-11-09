@@ -46,7 +46,6 @@
     galculator
     whatsapp-for-linux
     openscad
-    vimPlugins.vim-plug
     ### WORK --->
     trivy
     ### <--- WORK
@@ -126,22 +125,71 @@
 
   programs = {
   # Let Home Manager install and manage itself.
-    home-manager.enable = true;
-    powerline-go = {
-    	enable = true;
+  home-manager.enable = true;
+  neovim = 
+  let
+    toLua = str: "lua << EOF\n${str}\nEOF\n";
+    toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
+  in
+  {
+    
+    enable=true;
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+    plugins = with pkgs.vimPlugins; [
+      vim-nix
+      vim-go  
+      coc-nvim
+      coc-go
+      coc-sh
+      coc-git
+      coc-yaml
+      coc-toml
+      coc-json
+      coc-python
+      {
+        plugin = comment-nvim;
+        config = toLua "require(\"Comment\").setup()";
+      }
+      {
+        plugin = gruvbox-nvim;
+        #config = "colorscheme gruvbox";
+      }
+    
+      { 
+          plugin = NeoSolarized;
+          config = "
+          set background=dark
+          colorscheme NeoSolarized
+          ";
+      }
+      nvim-web-devicons
+      vim-airline-themes
+      {
+          plugin = vim-airline;
+          config = "
+          let g:airline_theme='solarized'
+          let g:airline_solarized_bg='dark'
+          ";
+      }
+    ];
+  };
+  powerline-go = {
+    enable = true;
+  };
+  wofi = {
+    enable = true;
+    settings = {
+      allow_markup = true;
+      allow_images = true;
+      image_size = 64;
     };
-    wofi = {
-      enable = true;
-      settings = {
-    	allow_markup = true;
-	allow_images = true;
-	image_size = 64;
-      };
-    };
-    zsh = {
-      enable = true;
-      enableAutosuggestions = true;
-    };
+  };
+  zsh = {
+    enable = true;
+    enableAutosuggestions = true;
+  };
 #    waybar = {
 #      enable = true;
 #      settings = {
@@ -155,37 +203,38 @@
   };
 
   services = {
-  	swayidle = {
-		enable = true;
-		events = [
-			{ event = "before-sleep"; command = "swaylock -f --grace-no-mouse"; }
-		];
-		timeouts = [
-			{ timeout = 300; command = "swaylock -fF --fade-in 1 --grace-no-mouse"; }
-			{ timeout = 600; command = "hyprctl dispatch dpms off"; resumeCommand = "hyprctl dispatch dpms on"; }
-		];
+    swayidle = {
+      enable = true;
+      events = [
+        { event = "before-sleep"; command = "swaylock -f --grace-no-mouse"; }
+      ];
+      timeouts = [
+        { timeout = 300; command = "swaylock -fF --fade-in 1 --grace-no-mouse"; }
+        { timeout = 600; command = "hyprctl dispatch dpms off"; resumeCommand = "hyprctl dispatch dpms on"; }
 
-	};
-	dunst = {
-		enable = true;
-	};
-  	kdeconnect = {
-		enable = true;
-		indicator = true;
-	};
-	gpg-agent = {
-		enable = true;
-		defaultCacheTtl = 1800;
-		enableSshSupport = true;
-	};
-	#gnome-keyring = {
-	#	enable = true;
-	#	components = [
-	#		"pkcs11"
-	#		"secrets"
-	#		"ssh"
-	#	];
-	#};
+      ];
+    
+    };
+    dunst = {
+      enable = true;
+    };
+    kdeconnect = {
+      enable = true;
+      indicator = true;
+ 
+    };
+    gpg-agent = {
+      enable = true;
+      defaultCacheTtl = 1800;
+      enableSshSupport = true;
+    };
+
+    gnome-keyring = {
+      enable = true;
+      components = [
+        "secrets"
+      ];
+    };
 #	mpd = {
 #		enable = true;
 #	};
