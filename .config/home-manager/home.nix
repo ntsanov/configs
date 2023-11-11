@@ -20,6 +20,10 @@
   # release notes.
   home.stateVersion = "23.05"; # Please read the comment before changing.
 
+  home.shellAliases = {
+    "ls" = "ls --color=auto";
+  };
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
@@ -112,14 +116,8 @@
      username = "ntsanov";
      sessionVariables = {
        EDITOR = "nvim";
-       TERM= "vt100";
+       TERM= "xterm-256color";
        PATH = "$PATH:$HOME/.local/bin";
-     };
-     keyboard = {
-       layout = "us,bg";
-       options = [
-         "caps:swapescape"
-       ];
      };
   };
 
@@ -129,6 +127,9 @@
   neovim = 
   let
     toLua = str: "lua << EOF\n${str}\nEOF\n";
+    #requireSetup = str: "lua << EOF\nrequire(\"${str}\").setup()\nEOF\n";
+    requireSetup = name: config: toLua "require(\"${name}\").setup(${config})";
+    requireDefaultSetup = name: requireSetup "${name}" "{}";
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in
   {
@@ -149,30 +150,22 @@
       coc-json
       coc-python
       {
+        plugin = lualine-nvim;
+        config = toLua "require(\"lualine\").setup { options = { theme = \"gruvbox\", }, }";
+      }
+      {
+        plugin = nvim-surround;
+        config = requireDefaultSetup "nvim-surround";
+      }
+      {
         plugin = comment-nvim;
-        config = toLua "require(\"Comment\").setup()";
+        config = requireDefaultSetup "Comment";
       }
       {
         plugin = gruvbox-nvim;
-        #config = "colorscheme gruvbox";
-      }
-    
-      { 
-          plugin = NeoSolarized;
-          config = "
-          set background=dark
-          colorscheme NeoSolarized
-          ";
+        config = "colorscheme gruvbox";
       }
       nvim-web-devicons
-      vim-airline-themes
-      {
-          plugin = vim-airline;
-          config = "
-          let g:airline_theme='solarized'
-          let g:airline_solarized_bg='dark'
-          ";
-      }
     ];
   };
   powerline-go = {
@@ -189,6 +182,9 @@
   zsh = {
     enable = true;
     enableAutosuggestions = true;
+    syntaxHighlighting = {
+      enable = true;
+    };
   };
 #    waybar = {
 #      enable = true;
