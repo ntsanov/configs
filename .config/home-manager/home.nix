@@ -1,5 +1,21 @@
 { config, pkgs, ... }:
 
+# https://github.com/nix-community/nixGL/issues/114#issuecomment-1732228827
+### This seems to cause destop not to appear in dmenu
+let nixGL = import <nixgl> { }; nixGLWrap = pkg:
+    let
+      bin = "${pkg}/bin";
+      executables = builtins.attrNames (builtins.readDir bin);
+    in
+    pkgs.buildEnv {
+      name = "nixGL-${pkg.name}";
+      paths = map
+        (name: pkgs.writeShellScriptBin name ''
+          exec -a "$0" ${nixGL.auto.nixGLDefault}/bin/nixGL ${bin}/${name} "$@"
+        '')
+        executables;
+    };
+in
 {
   nixpkgs = {
     config = {
@@ -21,48 +37,60 @@
   home.stateVersion = "23.05"; # Please read the comment before changing.
 
   home.shellAliases = {
-    "ls" = "ls --color=auto";
+    "ls" = "ls --color=auto --hyperlink $@";
+    "s" = "kitten ssh";
   };
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = with pkgs; [
-    htop
-    dig
-    obsidian
-    wtype
-    pwgen
-    strace
-    roboto-mono
-    noto-fonts-emoji
-    nerdfonts
-    pw-volume
-    winbox
-    dconf
-    vscode
-    spotify
-    unixtools.route
-    remmina
-    sshfs
-    gimp
-    feh
-    ranger
-    galculator
-    whatsapp-for-linux
-    openscad
-    ### WORK --->
-    trivy
-    ### <--- WORK
+  home.packages = [
+    pkgs.htop
+    pkgs.dig
+    pkgs.obsidian
+    pkgs.vscode
+    pkgs.spotify
+    (nixGLWrap pkgs.android-studio)
+    (nixGLWrap pkgs.google-chrome)
+    pkgs.wtype
+    pkgs.pwgen
+    pkgs.strace
+    pkgs.roboto-mono
+    pkgs.noto-fonts-emoji
+    pkgs.nerdfonts
+    pkgs.pw-volume
+    pkgs.winbox
+    pkgs.dconf
+    pkgs.unixtools.route
+    pkgs.remmina
+    pkgs.sshfs
+    pkgs.gimp
+    pkgs.feh
+    pkgs.ranger
+    pkgs.hostname
+    (nixGLWrap pkgs.whatsapp-for-linux)
+    (nixGLWrap pkgs.openscad)
+    ### DEV --->
+    pkgs.trivy
+    pkgs.flutter
+    pkgs.tree-sitter
+    ### <--- DEV
     ### HYPRLAND --->
-    wlr-randr
-    pass-wayland
-    hyprpaper
-    wofi-emoji
-    wl-clipboard
+    pkgs.wlr-randr
+    pkgs.pass-wayland
+    pkgs.hyprpaper
+    pkgs.wofi-emoji
+    pkgs.wl-clipboard
+    pkgs.gnome.nautilus
+    pkgs.gnome.gnome-calculator
+    pkgs.gnome.gnome-sound-recorder
+    pkgs.gnome.dconf-editor
+    pkgs.gnome.gnome-tweaks
+    pkgs.gnome.gvfs
+    pkgs.gtk-engine-murrine
     # swaylock-effects => couldn't login, has to do with PAM
-    swayidle
-    wlogout
-    dunst
+    pkgs.wlogout
+    pkgs.dunst
+    pkgs.pavucontrol
     ### <--- HYPERLAND
     #xdg-desktop-portal-hyprland
     #subversion
@@ -115,15 +143,113 @@
      homeDirectory = "/home/ntsanov";
      username = "ntsanov";
      sessionVariables = {
-       EDITOR = "nvim";
-       TERM= "xterm-256color";
-       PATH = "$PATH:$HOME/.local/bin";
+  #     TERM = "xterm-256color";
+       CHROME_EXECUTABLE = "google-chrome-stable";
+       PATH = "$PATH:$HOME/.local/bin:$HOME/go/bin";
+       # gtk4 applications need this to use the gtk theme
+       TK_THEME="Gruvbox-Dark-BL";
+       # In order for nautilus to be able to use gvfs mounts
+       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
      };
+  };
+
+  wayland.windowManager.hyprland = {
+    enable = false;
+    systemd = {
+      enable = true;
+    };
+      settings = {
+        exec-once = [
+          "waybar"
+          "nm-applet"
+          "start_portal.sh"
+          "hyprpaper"
+          "/usr/lib/polkit-kde-authentication-agent-1"
+        ];
+        input = {
+          kb_layout = "us,bg";
+          kb_variant = ",phonetic";
+          kb_options = "grp:caps_toggle";
+        };
+        windowrule = [
+          "float,org.kde.polkit-kde-authentication-agent-1"
+          "float,org.gnome.Calculator"
+          "float,pavucontrol"
+        ];
+        bind = [
+          # Sound
+          ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86AudioMute, exec, pw-volume mute toggle; pkill -RTMIN+8 waybar"
+          # Screenshots
+          "SHIFT, Print, exec, hyprshot -m region -r | satty -f - "
+          ", Print, exec, hyprshot -m region --clipboard-only"
+          "=CTRL, Print, exec, hyprshot -m window --clipboard-only"
+          "=CTRLSHIFT, Print, exec, hyprshot -m window -r | satty -f -"
+          # Power
+          "$mainMod SHIFT, L, exec, wlogout"
+          # Move window with keyboard
+          "$mainMod SHIFT, H, movewindow, l"
+          "$mainMod SHIFT, L, movewindow, r"
+          "$mainMod SHIFT, K, movewindow, u"
+          "$mainMod SHIFT, J, movewindow, d"
+          "$mainMod SHIFT, left, movewindow, l"
+          "$mainMod SHIFT, right, movewindow, r"
+          "$mainMod SHIFT, up, movewindow, u"
+          "$mainMod SHIFT, down, movewindow, d"
+          # Resize windows with keyboard
+          "$mainMod SHIFT, l, resizeactive, 30 0"
+          "$mainMod SHIFT, h, resizeactive, -30 0"
+          "$mainMod SHIFT, j, resizeactive, 0 -30"
+          "$mainMod SHIFT, k, resizeactive, 0 30 "
+        ];
+      };
   };
 
   programs = {
   # Let Home Manager install and manage itself.
   home-manager.enable = true;
+  rofi = {
+    package = pkgs.rofi-wayland;
+    enable = true;
+    theme = "gruvbox-dark";
+    extraConfig = {
+      font = "DejaVu Sans 20";
+    };
+    # TODO put rofi config into flake - https://github.com/adi1090x/rofi
+    configPath = "$XDG_CONFIG_HOME/rofi/config_hm.rasi";
+    pass = {
+      enable = true;
+      package = pkgs.rofi-pass-wayland;
+      extraConfig = ''
+        _clip_in_primary() {
+          wl-copy-p
+        }
+
+        _clip_in_clipboard() {
+          wl-copy
+        }
+
+        _clip_out_primary() {
+          wl-paste -p
+        }
+
+        _clip_out_clipboard() {
+          wl-paste
+        }
+        USERNAME_field='username'
+        clip=both
+        edit_new_pass="true"
+        default_do='copyPass'
+        clibpoard_backend=wl-clipboard
+        backend=wtype
+      '';
+    };
+  };
+  go = {
+    enable = true;
+    goBin = "go/bin";
+  };
   neovim = 
   let
     toLua = str: "lua << EOF\n${str}\nEOF\n";
@@ -133,15 +259,87 @@
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in
   {
-    
     enable=true;
+    defaultEditor = true;
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    extraPackages = with  pkgs; [
+      # Optional dependencies for telescope
+      ripgrep
+      fd
+    ];
+    extraConfig = 
+    ''
+      set clipboard=unnamedplus
+      nnoremap <A-l> :tabNext<CR>
+      nnoremap <A-h> :tabprevious<CR>
+      nnoremap <A-1> :1tabnext<CR>
+      nnoremap <A-2> :2tabnext<CR>
+      nnoremap <A-3> :3tabnext<CR>
+      nnoremap <A-4> :4tabnext<CR>
+      nnoremap <A-5> :5tabnext<CR>
+      nnoremap <A-6> :6tabnext<CR>
+      nnoremap <A-7> :7tabnext<CR>
+      nnoremap <A-8> :8tabnext<CR>
+      nnoremap <A-9> :9tabnext<CR>
+      nnoremap <C-w> :tabclose<CR>
+    '';
     plugins = with pkgs.vimPlugins; [
       vim-nix
       vim-go  
-      coc-nvim
+      plenary-nvim
+      {
+        plugin = telescope-nvim;
+        config = toLuaFile ./nvim/plugin/telescope.lua;
+      }
+      {
+        plugin = coc-nvim;
+        config = toLuaFile ./nvim/plugin/coc.lua;
+      }
+      {
+        plugin = nvim-treesitter;
+        config = toLuaFile ./nvim/plugin/tree-splitter.lua;
+      }
+      {
+        plugin = lualine-nvim;
+        # config = toLua "require(\"lualine\").setup { options = { theme = \"gruvbox\", }, }";
+        config = toLuaFile ./nvim/plugin/lualine.lua;
+      }
+      {
+        plugin = nvim-tree-lua;
+        config = requireDefaultSetup "nvim-tree";
+      }
+      {
+        plugin = dashboard-nvim;
+        config = requireDefaultSetup "dashboard";
+      }
+      nvim-treesitter-parsers.go
+      nvim-treesitter-parsers.gosum
+      nvim-treesitter-parsers.gowork
+      nvim-treesitter-parsers.gomod
+      nvim-treesitter-parsers.python
+      nvim-treesitter-parsers.bash
+      nvim-treesitter-parsers.rust
+      nvim-treesitter-parsers.json
+      nvim-treesitter-parsers.javascript
+      nvim-treesitter-parsers.c
+      nvim-treesitter-parsers.nix
+      nvim-treesitter-parsers.vim
+      nvim-treesitter-parsers.vimdoc
+      nvim-treesitter-parsers.sql
+      nvim-treesitter-parsers.lua
+      nvim-treesitter-parsers.css
+      nvim-treesitter-parsers.html
+      nvim-treesitter-parsers.css
+      nvim-treesitter-parsers.awk
+      nvim-treesitter-parsers.yaml
+      nvim-treesitter-parsers.toml
+      nvim-treesitter-parsers.make
+      nvim-treesitter-parsers.regex
+      nvim-treesitter-parsers.pem
+      nvim-treesitter-parsers.gitignore
+      nvim-treesitter-parsers.gitcommit
       coc-go
       coc-sh
       coc-git
@@ -149,10 +347,7 @@
       coc-toml
       coc-json
       coc-python
-      {
-        plugin = lualine-nvim;
-        config = toLua "require(\"lualine\").setup { options = { theme = \"gruvbox\", }, }";
-      }
+      coc-lua
       {
         plugin = nvim-surround;
         config = requireDefaultSetup "nvim-surround";
@@ -168,8 +363,42 @@
       nvim-web-devicons
     ];
   };
+  browserpass = {
+    enable = true;
+    browsers = [ 
+      "chromium"
+      "chrome"
+    ];
+  };
+  # chromium = {
+  #   enable = true;
+  #   package = nixGLWrap pkgs.chromium;
+  # };
+  kitty = {
+    package = nixGLWrap pkgs.kitty;
+    enable = true;
+    shellIntegration = {
+      enableZshIntegration = true;
+    };
+    #extraConfig = "font_size = 9.0";
+    theme = "Gruvbox Dark";
+    font = {
+      name = "DejaVu Sans";
+      size = 13;
+    };
+  };
   powerline-go = {
     enable = true;
+    newline = true;
+    settings = {
+      hostname-only-if-ssh = true;
+      vi-mode = "viins";
+      # Gruvbox looks horrible
+      #theme = "solarized-dark16";
+    };
+    modulesRight = [
+      "vi-mode"
+    ];
   };
   wofi = {
     enable = true;
@@ -181,8 +410,18 @@
   };
   zsh = {
     enable = true;
+    defaultKeymap = "viins";
     enableAutosuggestions = true;
     syntaxHighlighting = {
+      enable = true;
+    };
+    zplug = {
+      enable = true;
+      plugins = [
+        { name = "jeffreytse/zsh-vi-mode"; }
+      ];
+    };
+    oh-my-zsh = {
       enable = true;
     };
   };
@@ -237,9 +476,21 @@
   };
   gtk = {
     enable = true;
+    gtk3 = {
+      extraConfig = {
+        gtk-application-prefer-dark-theme = true;
+      };
+    };
+    gtk4 = {
+      extraConfig = {
+        gtk-application-prefer-dark-theme = true;
+      };
+    };
     theme = {
-      name = "orchis-theme";
-      package = pkgs.orchis-theme;
+      # gruvbox-gtk-theme-unstable
+      # orchis-theme
+      name = "Gruvbox-Dark-BL";
+      package = pkgs.gruvbox-gtk-theme;
     };
     iconTheme = {
       name = "Tela-circle";
@@ -247,7 +498,7 @@
       package = pkgs.tela-circle-icon-theme;
     };
     cursorTheme = {
-      name = "Adwaita";
+      name = "Adwaita:dark";
       package = pkgs.gnome.adwaita-icon-theme;
     };
   };
