@@ -284,6 +284,9 @@ in
       nnoremap <A-8> :8tabnext<CR>
       nnoremap <A-9> :9tabnext<CR>
       nnoremap <C-w> :tabclose<CR>
+      nnoremap <leader>tt :NvimTreeToggle<CR>
+      nnoremap <leader>tf :NvimTreeFocus<CR>
+      nnoremap <leader>tc :NvimTreeClose<CR>
     '';
     plugins = with pkgs.vimPlugins; [
       vim-nix
