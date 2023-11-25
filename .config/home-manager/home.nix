@@ -3,27 +3,27 @@
 # https://github.com/nix-community/nixGL/issues/114#issuecomment-1732228827
 ### This seems to cause destop not to appear in dmenu
 let nixGL = import <nixgl> { }; nixGLWrap = pkg:
-    let
-      bin = "${pkg}/bin";
-      executables = builtins.attrNames (builtins.readDir bin);
-    in
-    pkgs.buildEnv {
-      name = "nixGL-${pkg.name}";
-      paths = map
-        (name: pkgs.writeShellScriptBin name ''
-          exec -a "$0" ${nixGL.auto.nixGLDefault}/bin/nixGL ${bin}/${name} "$@"
-        '')
-        executables;
-    };
+let
+  bin = "${pkg}/bin";
+  executables = builtins.attrNames (builtins.readDir bin);
 in
-{
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
-    };
+  pkgs.buildEnv {
+    name = "nixGL-${pkg.name}";
+    paths = map
+    (name: pkgs.writeShellScriptBin name ''
+    exec -a "$0" ${nixGL.auto.nixGLDefault}/bin/nixGL ${bin}/${name} "$@"
+    '')
+    executables;
   };
-  targets.genericLinux.enable = true;
+in
+  {
+    nixpkgs = {
+      config = {
+        allowUnfree = true;
+        allowUnfreePredicate = (_: true);
+      };
+    };
+    targets.genericLinux.enable = true;
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
 
@@ -46,6 +46,7 @@ in
   home.packages = [
     pkgs.htop
     pkgs.dig
+    pkgs.more
     pkgs.obsidian
     pkgs.vscode
     pkgs.spotify
@@ -66,7 +67,9 @@ in
     pkgs.gimp
     pkgs.feh
     pkgs.ranger
+    pkgs.calibre
     pkgs.hostname
+    pkgs.libfido2
     (nixGLWrap pkgs.whatsapp-for-linux)
     (nixGLWrap pkgs.openscad)
     ### DEV --->
@@ -140,43 +143,58 @@ in
   #
   # if you don't want to manage your shell through Home Manager.
   home = {
-     homeDirectory = "/home/ntsanov";
-     username = "ntsanov";
-     sessionVariables = {
+    homeDirectory = "/home/ntsanov";
+    username = "ntsanov";
+    sessionVariables = {
   #     TERM = "xterm-256color";
-       CHROME_EXECUTABLE = "google-chrome-stable";
-       PATH = "$PATH:$HOME/.local/bin:$HOME/go/bin";
+  CHROME_EXECUTABLE = "google-chrome-stable";
+  PATH = "$PATH:$HOME/.local/bin:$HOME/go/bin";
        # gtk4 applications need this to use the gtk theme
        TK_THEME="Gruvbox-Dark-BL";
        # In order for nautilus to be able to use gvfs mounts
        GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
+       MANPAGER = "nvim +Man!";
      };
-  };
+   };
 
-  wayland.windowManager.hyprland = {
-    enable = false;
-    systemd = {
-      enable = true;
-    };
-      settings = {
-        exec-once = [
-          "waybar"
-          "nm-applet"
-          "start_portal.sh"
-          "hyprpaper"
-          "/usr/lib/polkit-kde-authentication-agent-1"
-        ];
-        input = {
-          kb_layout = "us,bg";
-          kb_variant = ",phonetic";
-          kb_options = "grp:caps_toggle";
-        };
-        windowrule = [
-          "float,org.kde.polkit-kde-authentication-agent-1"
-          "float,org.gnome.Calculator"
-          "float,pavucontrol"
-        ];
-        bind = [
+   wayland.windowManager.hyprland = {
+     enable = true;
+     systemd = {
+       enable = true;
+     };
+     extraConfig = ''
+     source=~/.config/hypr/monitors.conf
+     $mainMod = SUPER
+     '';
+     settings = {
+       exec-once = [
+         "waybar"
+         "nm-applet"
+         "start_portal.sh"
+         "hyprpaper"
+         "/usr/lib/polkit-kde-authentication-agent-1"
+       ];
+       input = {
+         kb_layout = "us,bg";
+         kb_variant = ",phonetic";
+         kb_options = "grp:caps_toggle";
+       };
+       windowrule = [
+         "float,org.kde.polkit-kde-authentication-agent-1"
+         "float,org.gnome.Calculator"
+         "float,pavucontrol"
+       ];
+       bind = [
+
+         "$mainMod, Q, exec, kitty"
+         "$mainMod, C, killactive"
+         "$mainMod, M, exec, powermenu"
+         "$mainMod, E, exec, nautilus"
+         "$mainMod, T, togglefloating"
+         "$mainMod, R, exec, rofi-launcher"
+         "$mainMod, P, exec, rofi-pass"
+         "$mainMod, A, togglesplit" # dwindle
+         "$mainMod, S, exec,rofi -show ssh"
           # Sound
           ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
           ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
@@ -204,9 +222,9 @@ in
           "$mainMod SHIFT, k, resizeactive, 0 30 "
         ];
       };
-  };
+    };
 
-  programs = {
+    programs = {
   # Let Home Manager install and manage itself.
   home-manager.enable = true;
   rofi = {
@@ -222,27 +240,28 @@ in
       enable = true;
       package = pkgs.rofi-pass-wayland;
       extraConfig = ''
-        _clip_in_primary() {
-          wl-copy-p
-        }
+      _clip_in_primary() {
+        wl-copy-p
+      }
 
-        _clip_in_clipboard() {
-          wl-copy
-        }
+      _clip_in_clipboard() {
+        wl-copy
+      }
 
-        _clip_out_primary() {
-          wl-paste -p
-        }
+      _clip_out_primary() {
+        wl-paste -p
+      }
 
-        _clip_out_clipboard() {
-          wl-paste
-        }
-        USERNAME_field='username'
-        clip=both
-        edit_new_pass="true"
-        default_do='copyPass'
-        clibpoard_backend=wl-clipboard
-        backend=wtype
+      _clip_out_clipboard() {
+        wl-paste
+      }
+      USERNAME_field='username'
+      EDITOR="kitty vi"
+      clip=both
+      edit_new_pass="true"
+      default_do='copyPass'
+      clibpoard_backend=wl-clipboard
+      backend=wtype
       '';
     };
   };
@@ -268,37 +287,66 @@ in
       # Optional dependencies for telescope
       ripgrep
       fd
+      lua-language-server
+      marksman
+      ansible-language-server
+      openscad-lsp
+      pgformatter
+      stylua
+      shfmt
+      # sqlls - not in nix packges at this moment
+      nodePackages.bash-language-server
+      nodePackages_latest.vscode-langservers-extracted
+      nodePackages.typescript-language-server
+      nodePackages.dockerfile-language-server-nodejs
+      nodePackages.yaml-language-server
+      nodePackages.pyright
+      nodePackages.vls
     ];
     extraConfig = 
     ''
-      set clipboard=unnamedplus
-      nnoremap <A-l> :tabNext<CR>
-      nnoremap <A-h> :tabprevious<CR>
-      nnoremap <A-1> :1tabnext<CR>
-      nnoremap <A-2> :2tabnext<CR>
-      nnoremap <A-3> :3tabnext<CR>
-      nnoremap <A-4> :4tabnext<CR>
-      nnoremap <A-5> :5tabnext<CR>
-      nnoremap <A-6> :6tabnext<CR>
-      nnoremap <A-7> :7tabnext<CR>
-      nnoremap <A-8> :8tabnext<CR>
-      nnoremap <A-9> :9tabnext<CR>
-      nnoremap <C-w> :tabclose<CR>
-      nnoremap <leader>tt :NvimTreeToggle<CR>
-      nnoremap <leader>tf :NvimTreeFocus<CR>
-      nnoremap <leader>tc :NvimTreeClose<CR>
+    set clipboard=unnamedplus
+    nnoremap <A-l> :tabNext<CR>
+    nnoremap <A-h> :tabprevious<CR>
+    nnoremap <A-1> :1tabnext<CR>
+    nnoremap <A-2> :2tabnext<CR>
+    nnoremap <A-3> :3tabnext<CR>
+    nnoremap <A-4> :4tabnext<CR>
+    nnoremap <A-5> :5tabnext<CR>
+    nnoremap <A-6> :6tabnext<CR>
+    nnoremap <A-7> :7tabnext<CR>
+    nnoremap <A-8> :8tabnext<CR>
+    nnoremap <A-9> :9tabnext<CR>
+    nnoremap <leader>w :tabclose<CR>
+    nnoremap <leader>tt :NvimTreeToggle<CR>
+    nnoremap <leader>tf :NvimTreeFocus<CR>
+    nnoremap <leader>tc :NvimTreeClose<CR>
     '';
     plugins = with pkgs.vimPlugins; [
       vim-nix
       vim-go  
       plenary-nvim
+      # nvim-cmp dependencies
+      cmp-path
+      cmp-buffer
+      cmp-nvim-lsp
+      cmp-cmdline
+      nvim-cmp
+      {
+        plugin = formatter-nvim;
+        config = toLuaFile ./nvim/plugin/formatter.lua;
+      }
       {
         plugin = telescope-nvim;
         config = toLuaFile ./nvim/plugin/telescope.lua;
       }
+      # {
+      #   plugin = coc-nvim;
+      #   config = toLuaFile ./nvim/plugin/coc.lua;
+      # }
       {
-        plugin = coc-nvim;
-        config = toLuaFile ./nvim/plugin/coc.lua;
+        plugin = nvim-lspconfig;
+        config = toLuaFile ./nvim/plugin/lspconfig.lua;
       }
       {
         plugin = nvim-treesitter;
@@ -306,7 +354,6 @@ in
       }
       {
         plugin = lualine-nvim;
-        # config = toLua "require(\"lualine\").setup { options = { theme = \"gruvbox\", }, }";
         config = toLuaFile ./nvim/plugin/lualine.lua;
       }
       {
@@ -317,40 +364,34 @@ in
         plugin = dashboard-nvim;
         config = requireDefaultSetup "dashboard";
       }
-      nvim-treesitter-parsers.go
-      nvim-treesitter-parsers.gosum
-      nvim-treesitter-parsers.gowork
-      nvim-treesitter-parsers.gomod
-      nvim-treesitter-parsers.python
-      nvim-treesitter-parsers.bash
-      nvim-treesitter-parsers.rust
-      nvim-treesitter-parsers.json
-      nvim-treesitter-parsers.javascript
-      nvim-treesitter-parsers.c
-      nvim-treesitter-parsers.nix
-      nvim-treesitter-parsers.vim
-      nvim-treesitter-parsers.vimdoc
-      nvim-treesitter-parsers.sql
-      nvim-treesitter-parsers.lua
-      nvim-treesitter-parsers.css
-      nvim-treesitter-parsers.html
-      nvim-treesitter-parsers.css
-      nvim-treesitter-parsers.awk
-      nvim-treesitter-parsers.yaml
-      nvim-treesitter-parsers.toml
-      nvim-treesitter-parsers.make
-      nvim-treesitter-parsers.regex
-      nvim-treesitter-parsers.pem
-      nvim-treesitter-parsers.gitignore
-      nvim-treesitter-parsers.gitcommit
-      coc-go
-      coc-sh
-      coc-git
-      coc-yaml
-      coc-toml
-      coc-json
-      coc-python
-      coc-lua
+      (pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [
+        p.go
+        p.gosum
+        p.gowork
+        p.gomod
+        p.python
+        p.bash
+        p.rust
+        p.json
+        p.javascript
+        p.c
+        p.nix
+        p.vim
+        p.vimdoc
+        # p.sql - causes buffer overflow 
+        p.lua
+        p.css
+        p.html
+        p.css
+        p.awk
+        p.yaml
+        p.toml
+        p.make
+        p.regex
+        p.pem
+        p.gitignore
+        p.gitcommit
+      ]))
       {
         plugin = nvim-surround;
         config = requireDefaultSetup "nvim-surround";
@@ -383,7 +424,7 @@ in
     shellIntegration = {
       enableZshIntegration = true;
     };
-    #extraConfig = "font_size = 9.0";
+    extraConfig = "background_opacity 0.8";
     theme = "Gruvbox Dark";
     font = {
       name = "DejaVu Sans";
@@ -437,7 +478,7 @@ in
 #	};
 #      };
 #    };
-    
+
   };
 
   services = {
@@ -451,7 +492,7 @@ in
         { timeout = 600; command = "hyprctl dispatch dpms off"; resumeCommand = "hyprctl dispatch dpms on"; }
 
       ];
-    
+
     };
     dunst = {
       enable = true;
@@ -459,7 +500,7 @@ in
     kdeconnect = {
       enable = true;
       indicator = true;
- 
+
     };
     gpg-agent = {
       enable = true;
