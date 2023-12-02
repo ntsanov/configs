@@ -349,6 +349,9 @@ in {
         cmp-buffer
         cmp-nvim-lsp
         cmp-cmdline
+        # cmp-vsnip
+        # vim-vsnip
+        lspkind-nvim
         minimap-vim
         # TODO finish nvim-dap config
         #{
@@ -356,6 +359,11 @@ in {
         #  config = requireDefaultSetup "nvim-dap-go";
         #}
         #nvim-dap-go
+        cmp_luasnip
+        {
+          plugin = luasnip;
+          config = toLuaFile ./nvim/plugin/luasnip.lua;
+        }
         {
           plugin = nvim-autopairs;
           config = toLuaFile ./nvim/plugin/autopairs.lua;
@@ -462,8 +470,8 @@ in {
       extraConfig = "background_opacity 0.8";
       theme = "Gruvbox Dark";
       font = {
-        name = "FiraCode Nerd Font Mono Reg";
-        size = 12;
+        name = "FiraCode Nerd Font";
+        size = 13;
       };
     };
     powerline-go = {
