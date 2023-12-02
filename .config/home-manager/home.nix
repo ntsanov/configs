@@ -357,6 +357,10 @@ in {
         #}
         #nvim-dap-go
         {
+          plugin = nvim-autopairs;
+          config = toLuaFile ./nvim/plugin/autopairs.lua;
+        }
+        {
           plugin = codewindow-nvim;
           config = toLuaFile ./nvim/plugin/codewindow.lua;
         }
