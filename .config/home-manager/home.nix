@@ -159,6 +159,8 @@ in {
     };
   };
 
+  fonts.fontconfig.enable = true;
+
   wayland.windowManager.hyprland = {
     enable = true;
     systemd = { enable = true; };
@@ -347,6 +349,7 @@ in {
         cmp-buffer
         cmp-nvim-lsp
         cmp-cmdline
+        minimap-vim
         # TODO finish nvim-dap config
         #{
         #  plugin = nvim-dap;
@@ -354,8 +357,12 @@ in {
         #}
         #nvim-dap-go
         {
+          plugin = codewindow-nvim;
+          config = toLuaFile ./nvim/plugin/codewindow.lua;
+        }
+        {
           plugin = gitsigns-nvim;
-          config = requireDefaultSetup "gitsigns";
+          config = toLuaFile ./nvim/plugin/gitsigns.lua;
         }
         {
           plugin = nvim-cmp;
@@ -451,8 +458,8 @@ in {
       extraConfig = "background_opacity 0.8";
       theme = "Gruvbox Dark";
       font = {
-        name = "DejaVu Sans";
-        size = 13;
+        name = "FiraCode Nerd Font Mono Reg";
+        size = 12;
       };
     };
     powerline-go = {
