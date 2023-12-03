@@ -349,6 +349,7 @@ in {
         cmp-buffer
         cmp-nvim-lsp
         cmp-cmdline
+        cmp-nvim-lsp-signature-help
         minimap-vim
         # TODO finish nvim-dap config
         #{
