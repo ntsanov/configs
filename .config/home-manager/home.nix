@@ -350,6 +350,7 @@ in {
         cmp-nvim-lsp
         cmp-cmdline
         cmp-nvim-lsp-signature-help
+        lspkind-nvim
         minimap-vim
         # TODO finish nvim-dap config
         #{
