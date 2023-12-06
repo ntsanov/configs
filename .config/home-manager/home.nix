@@ -44,6 +44,7 @@ in {
   # environment.
   home.packages = [
     pkgs.htop
+    pkgs.inetutils
     pkgs.lftp
     pkgs.dig
     pkgs.more
@@ -465,7 +466,7 @@ in {
       theme = "Gruvbox Dark";
       font = {
         name = "FiraCode Nerd Font Mono Reg";
-        size = 12;
+        size = 13;
       };
     };
     powerline-go = {
