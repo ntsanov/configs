@@ -22,6 +22,7 @@ in {
       allowUnfreePredicate = (_: true);
     };
   };
+  imports = [ ./packages.nix ];
   targets.genericLinux.enable = true;
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -39,86 +40,6 @@ in {
     "ls" = "ls --color=auto --hyperlink $@";
     "s" = "kitten ssh";
   };
-
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = [
-    pkgs.htop
-    pkgs.inetutils
-    pkgs.lftp
-    pkgs.dig
-    pkgs.more
-    pkgs.obsidian
-    pkgs.vscode
-    pkgs.spotify
-    (nixGLWrap pkgs.android-studio)
-    (nixGLWrap pkgs.google-chrome)
-    pkgs.wtype
-    pkgs.pwgen
-    pkgs.strace
-    pkgs.roboto-mono
-    pkgs.noto-fonts-emoji
-    pkgs.nerdfonts
-    pkgs.pw-volume
-    pkgs.winbox
-    pkgs.dconf
-    pkgs.unixtools.route
-    pkgs.remmina
-    pkgs.sshfs
-    pkgs.gimp
-    pkgs.youtube-dl
-    pkgs.feh
-    pkgs.ranger
-    pkgs.calibre
-    pkgs.hostname
-    pkgs.libfido2
-    (nixGLWrap pkgs.whatsapp-for-linux)
-    (nixGLWrap pkgs.openscad)
-    ### DEV --->
-    pkgs.trivy
-    pkgs.flutter
-    pkgs.tree-sitter
-    ### <--- DEV
-    ### HYPRLAND --->
-    pkgs.wlr-randr
-    pkgs.pass-wayland
-    pkgs.hyprpaper
-    pkgs.wofi-emoji
-    pkgs.wl-clipboard
-    pkgs.gnome.nautilus
-    pkgs.gnome.gnome-calculator
-    pkgs.gnome.gnome-sound-recorder
-    pkgs.gnome.dconf-editor
-    pkgs.gnome.gnome-tweaks
-    pkgs.gnome.gvfs
-    pkgs.gtk-engine-murrine
-    # swaylock-effects => couldn't login, has to do with PAM
-    pkgs.wlogout
-    pkgs.dunst
-    pkgs.pavucontrol
-    pkgs.anydesk
-    ### <--- HYPERLAND
-    #xdg-desktop-portal-hyprland
-    #subversion
-    #perl
-    #git
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
