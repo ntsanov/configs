@@ -66,6 +66,7 @@ in {
     pkgs.remmina
     pkgs.sshfs
     pkgs.gimp
+    pkgs.youtube-dl
     pkgs.feh
     pkgs.ranger
     pkgs.calibre
@@ -354,11 +355,12 @@ in {
         lspkind-nvim
         minimap-vim
         # TODO finish nvim-dap config
-        #{
-        #  plugin = nvim-dap;
-        #  config = requireDefaultSetup "nvim-dap-go";
-        #}
-        #nvim-dap-go
+        {
+          plugin = nvim-dap-go;
+          config = toLuaFile ./nvim/plugin/dap-go.lua;
+        }
+        nvim-dap
+        nvim-dap-ui
         {
           plugin = nvim-autopairs;
           config = toLuaFile ./nvim/plugin/autopairs.lua;
