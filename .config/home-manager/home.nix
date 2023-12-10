@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 # https://github.com/nix-community/nixGL/issues/114#issuecomment-1732228827
 ### This seems to cause destop not to appear in dmenu
 let
@@ -22,7 +21,7 @@ in {
       allowUnfreePredicate = (_: true);
     };
   };
-  imports = [ ./packages.nix ./nvim.nix ];
+  imports = [ ./packages.nix ./nvim.nix ./hyprland.nix ];
   targets.genericLinux.enable = true;
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -84,71 +83,6 @@ in {
 
   fonts.fontconfig.enable = true;
 
-  wayland.windowManager.hyprland = {
-    enable = true;
-    systemd = { enable = true; };
-    extraConfig = ''
-      source=~/.config/hypr/monitors.conf
-      $mainMod = SUPER
-    '';
-    settings = {
-      exec-once = [
-        "waybar"
-        "nm-applet"
-        "start_portal.sh"
-        "hyprpaper"
-        "/usr/lib/polkit-kde-authentication-agent-1"
-      ];
-      input = {
-        kb_layout = "us,bg";
-        kb_variant = ",phonetic";
-        kb_options = "grp:caps_toggle";
-      };
-      windowrule = [
-        "float,org.kde.polkit-kde-authentication-agent-1"
-        "float,org.gnome.Calculator"
-        "float,pavucontrol"
-      ];
-      bind = [
-
-        "$mainMod, Q, exec, kitty"
-        "$mainMod, C, killactive"
-        "$mainMod, M, exec, powermenu"
-        "$mainMod, E, exec, nautilus"
-        "$mainMod, T, togglefloating"
-        "$mainMod, R, exec, rofi-launcher"
-        "$mainMod, P, exec, rofi-pass"
-        "$mainMod, A, togglesplit" # dwindle
-        "$mainMod, S, exec,rofi -show ssh"
-        # Sound
-        ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, pw-volume mute toggle; pkill -RTMIN+8 waybar"
-        # Screenshots
-        "SHIFT, Print, exec, hyprshot -m region -r | satty -f - "
-        ", Print, exec, hyprshot -m region --clipboard-only"
-        "=CTRL, Print, exec, hyprshot -m window --clipboard-only"
-        "=CTRLSHIFT, Print, exec, hyprshot -m window -r | satty -f -"
-        # Power
-        "$mainMod SHIFT, L, exec, wlogout"
-        # Move window with keyboard
-        "$mainMod SHIFT, H, movewindow, l"
-        "$mainMod SHIFT, L, movewindow, r"
-        "$mainMod SHIFT, K, movewindow, u"
-        "$mainMod SHIFT, J, movewindow, d"
-        "$mainMod SHIFT, left, movewindow, l"
-        "$mainMod SHIFT, right, movewindow, r"
-        "$mainMod SHIFT, up, movewindow, u"
-        "$mainMod SHIFT, down, movewindow, d"
-        # Resize windows with keyboard
-        "$mainMod SHIFT, l, resizeactive, 30 0"
-        "$mainMod SHIFT, h, resizeactive, -30 0"
-        "$mainMod SHIFT, j, resizeactive, 0 -30"
-        "$mainMod SHIFT, k, resizeactive, 0 30 "
-      ];
-    };
-  };
-
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
@@ -196,10 +130,10 @@ in {
       enable = true;
       browsers = [ "chromium" "chrome" ];
     };
-    # chromium = {
-    #   enable = true;
-    #   package = nixGLWrap pkgs.chromium;
-    # };
+    chromium = {
+      enable = true;
+      package = nixGLWrap pkgs.chromium;
+    };
     kitty = {
       package = nixGLWrap pkgs.kitty;
       enable = true;
@@ -240,6 +174,10 @@ in {
         plugins = [{ name = "jeffreytse/zsh-vi-mode"; }];
       };
       oh-my-zsh = { enable = true; };
+    };
+    waybar = {
+      enable = true;
+      systemd.enable = true;
     };
     #    waybar = {
     #      enable = true;
