@@ -51,8 +51,10 @@
     pass-wayland
     hyprpaper
     wofi-emoji
+    rofi-bluetooth
     wl-clipboard
     polkit_gnome
+    gnome.gnome-bluetooth
     gnome.nautilus
     gnome.gnome-calculator
     gnome.gnome-sound-recorder
