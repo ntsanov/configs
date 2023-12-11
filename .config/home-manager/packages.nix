@@ -5,7 +5,10 @@
     config = {
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
-      permittedInsecurePackages = [ "electron-25.9.0" ];
+      permittedInsecurePackages = [
+        "electron-25.9.0"
+        "openssl-1.1.1w" # Viber
+      ];
     };
   };
   home.packages = with pkgs; [
@@ -40,6 +43,7 @@
     hostname
     libfido2
     whatsapp-for-linux
+    viber
     openscad
     ### DEV --->
     trivy
