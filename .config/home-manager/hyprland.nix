@@ -1,4 +1,16 @@
 { config, ... }: {
+
+  services.kdeconnect = {
+    enable = true;
+    indicator = true;
+  };
+
+  ### TODO needs waybar-hyprland
+  ### at the moment it is not available as nix package(maybe flake)
+  # programs.waybar = {
+  #   enable = true;
+  #   systemd.enable = true;
+  # };
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
@@ -8,7 +20,7 @@
         "nm-applet"
         "start_portal.sh"
         "hyprpaper"
-        "/usr/lib/polkit-kde-authentication-agent-1"
+        "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
       ];
       input = {
         kb_layout = "us,bg";
