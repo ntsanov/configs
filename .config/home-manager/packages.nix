@@ -28,6 +28,7 @@
     youtube-dl
     feh
     ranger
+    speedtest-cli
     calibre
     hostname
     libfido2
@@ -56,6 +57,7 @@
     dunst
     pavucontrol
     anydesk
+    libsForQt5.dolphin
     ### <--- HYPERLAND
     #xdg-desktop-portal-hyprland
     #subversion
