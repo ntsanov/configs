@@ -52,6 +52,7 @@
     hyprpaper
     wofi-emoji
     wl-clipboard
+    polkit_gnome
     gnome.nautilus
     gnome.gnome-calculator
     gnome.gnome-sound-recorder
