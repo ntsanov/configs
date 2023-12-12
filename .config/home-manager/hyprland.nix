@@ -25,11 +25,25 @@
         kb_variant = ",phonetic";
         kb_options = "grp:caps_toggle";
       };
+      general = {
+        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+        "col.inactive_border" = "rgba(595959aa)";
+      };
+
+      decoration = {
+        rounding = 10;
+        blur = {
+          enabled = true;
+          size = 3;
+          passes = 1;
+        };
+      };
       windowrule = [
         "float,org.kde.polkit-kde-authentication-agent-1"
         "float,org.gnome.Calculator"
         "float,pavucontrol"
         "float,solaar"
+        "float,blueman-manager"
         "stayfocused,gcr-prompter"
       ];
       "$mainMod" = "SUPER";
