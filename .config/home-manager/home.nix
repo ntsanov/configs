@@ -87,6 +87,12 @@ in {
       extraConfig = { font = "DejaVu Sans 20"; };
       # TODO put rofi config into flake - https://github.com/adi1090x/rofi
       configPath = "$XDG_CONFIG_HOME/rofi/config_hm.rasi";
+      plugins = with pkgs; [
+        rofi-vpn
+        rofi-bluetooth
+        rofi-pulse-select
+        rofi-emoji
+      ];
       pass = {
         enable = true;
         package = pkgs.rofi-pass-wayland;
@@ -135,7 +141,7 @@ in {
       extraConfig = "background_opacity 0.8";
       theme = "Gruvbox Dark";
       font = {
-        name = "FiraCode Nerd Font Mono Reg";
+        name = "FiraCode Nerd Font Mono";
         size = 13;
       };
     };
@@ -169,20 +175,6 @@ in {
       };
       oh-my-zsh = { enable = true; };
     };
-    waybar = {
-      enable = true;
-      systemd.enable = true;
-    };
-    #    waybar = {
-    #      enable = true;
-    #      settings = {
-    #        mainBar = {
-    #          layer = "top";
-    #          height = 30;
-    #	};
-    #      };
-    #    };
-
   };
 
   services = {
@@ -206,7 +198,10 @@ in {
       ];
 
     };
-    dunst = { enable = true; };
+    dunst.enable = true;
+    # fails to find bleman-mechanism service files
+    # seems to work if Arch package blueman is isnstalled as swell
+    blueman-applet.enable = true;
     kdeconnect = {
       enable = true;
       indicator = true;
@@ -216,6 +211,7 @@ in {
       enable = true;
       defaultCacheTtl = 1800;
       enableSshSupport = true;
+      pinentryFlavor = "gnome3";
     };
 
     gnome-keyring = {
