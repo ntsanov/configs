@@ -5,12 +5,10 @@
     indicator = true;
   };
 
-  ### TODO needs waybar-hyprland
-  ### at the moment it is not available as nix package(maybe flake)
-  # programs.waybar = {
-  #   enable = true;
-  #   systemd.enable = true;
-  # };
+  programs.waybar = {
+    enable = true;
+    systemd.enable = true;
+  };
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
@@ -32,6 +30,7 @@
         "float,org.gnome.Calculator"
         "float,pavucontrol"
         "float,solaar"
+        "stayfocused,gcr-prompter"
       ];
       "$mainMod" = "SUPER";
       bindm = [
@@ -48,6 +47,7 @@
         "$mainMod, T, togglefloating"
         "$mainMod, R, exec, rofi-launcher"
         "$mainMod, P, exec, rofi-pass"
+        "$mainMod, B, exec, rofi-bluetooth"
         "$mainMod, A, togglesplit" # dwindle
         "$mainMod, S, exec,rofi -show ssh"
         # Sound
