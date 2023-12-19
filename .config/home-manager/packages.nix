@@ -24,6 +24,7 @@
     google-chrome
     wtype
     pwgen
+    apacheHttpd
     strace
     roboto-mono
     noto-fonts-emoji
