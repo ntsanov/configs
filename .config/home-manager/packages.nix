@@ -36,7 +36,6 @@
     remmina
     sshfs
     gimp
-    youtube-dl
     feh
     ranger
     speedtest-cli
