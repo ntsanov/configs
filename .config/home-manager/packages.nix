@@ -13,6 +13,7 @@
   };
   home.packages = with pkgs; [
     htop
+    rsync
     inetutils
     lftp
     dig
