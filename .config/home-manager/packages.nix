@@ -47,6 +47,7 @@
     libfido2
     whatsapp-for-linux
     viber
+    steam
     openscad
     ### DEV --->
     trivy
