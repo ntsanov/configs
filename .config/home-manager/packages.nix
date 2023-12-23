@@ -14,6 +14,7 @@
   home.packages = with pkgs; [
     htop
     rsync
+    bc
     dosfstools
     inetutils
     lftp
