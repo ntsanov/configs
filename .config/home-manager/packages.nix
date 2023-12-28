@@ -17,9 +17,11 @@
     bc
     dosfstools
     inetutils
+    wireguard-tools
     lftp
     dig
     more
+    qrencode
     obsidian
     vscode
     spotify
@@ -48,6 +50,7 @@
     whatsapp-for-linux
     viber
     steam
+    gamescope
     openscad
     ### DEV --->
     trivy
