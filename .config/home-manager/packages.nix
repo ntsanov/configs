@@ -52,6 +52,8 @@
     steam
     gamescope
     openscad
+    super-slicer-latest
+    cura
     ### DEV --->
     trivy
     flutter
