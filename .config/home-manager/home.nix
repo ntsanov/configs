@@ -80,6 +80,7 @@ in {
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
+    yt-dlp.enable = true;
     rofi = {
       package = pkgs.rofi-wayland;
       enable = true;
