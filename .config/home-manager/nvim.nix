@@ -83,6 +83,11 @@
       minimap-vim
       # TODO finish nvim-dap config
       {
+        plugin = nvim-colorizer-lua;
+        config = requireDefaultSetup "colorizer";
+
+      }
+      {
         plugin = nvim-dap-go;
         config = toLuaFile ./nvim/plugin/dap-go.lua;
       }
