@@ -72,6 +72,7 @@
     plugins = with pkgs.vimPlugins; [
       vim-nix
       vim-go
+      solarized-nvim
       plenary-nvim
       # nvim-cmp dependencies
       cmp-path
